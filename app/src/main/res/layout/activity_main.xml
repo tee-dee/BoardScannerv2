@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.journeyapps.barcodescanner.DecoratedBarcodeView
+        android:id="@+id/barcode_scanner"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/buttonsLayout"
+        android:layout_alignParentTop="true">
+
+    </com.journeyapps.barcodescanner.DecoratedBarcodeView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/buttonsLayout"
+        android:layout_toLeftOf="@+id/centerHorizont">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@android:dimen/app_icon_size"
+            android:gravity="center"
+            android:id="@+id/sum"/>
+
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="20dp"
+                android:layout_toLeftOf="@id/clearBtn"
+                android:orientation="horizontal"
+                android:background="@drawable/outline"
+                android:id="@+id/operatorSwitch"
+                android:checkedButton="@id/operandadd">
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:id="@+id/operandadd"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:background="@drawable/toggle_background"
+                    android:textColor="@color/white"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                    android:text="+"
+                    android:onClick="onOperandChanged"/>
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginRight="1dp"
+                    android:layout_weight="1"
+                    android:id="@+id/operandsubtract"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:background="@drawable/toggle_background"
+                    android:textColor="@color/white"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
+                    android:text="-"
+                    android:onClick="onOperandChanged" />
+            </RadioGroup>
+            <!--
+                       <android.support.v7.widget.SwitchCompat
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_marginTop="@dimen/margin_tiny"
+                           android:layout_marginLeft="@dimen/margin_tiny"
+                           android:gravity="center_vertical"
+                           android:id="@+id/operatorSwitch"
+                           android:textOff="+"
+                           android:textOn="-"
+                           app:showText="true"
+                           app:switchMinWidth="100dp"
+                           app:switchTextAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                           android:thumb="@drawable/thumb"
+                           app:track="@drawable/track"/>
+
+                       <Button
+                           android:id="@+id/view_history"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_alignParentStart="true"
+                           android:text="History"
+                           android:onClick="showHistory"/>
+            -->
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/clearBtn"
+                android:text="Clear"
+                android:onClick="clear" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/centerHorizont" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/centerHorizont"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/buttonsLayout"
+        android:id="@+id/barcodePreview" />
+
+</RelativeLayout>
+

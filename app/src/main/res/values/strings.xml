@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BoardScanner-v2</string>
+    <string name="sum_label">SUM:</string>
+</resources>
