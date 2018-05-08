@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     private DecoratedBarcodeView barcodeView;
     private BeepManager beepManager;
-    //private SwitchCompat operandSwitch;
     private boolean subtract;
     private ArrayList<String> barcodeHistory;
 
@@ -84,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            // Invalid content
             if (!resultText.matches("^[0-9]+$")) {
                 statusText.append("NOK (Invalid content) : ");
                 statusText.append(resultText);
@@ -130,15 +130,11 @@ public class MainActivity extends AppCompatActivity {
             String newScan = resultText.substring(20, 26);
 
             calculate(newScan);
-            /*
-            double newValue = Double.parseDouble(newScan) * 0.01;
 
-            calculate(newValue);
-            */
             updateGUI();
 
             //Added preview of scanned barcode
-            ImageView imageView = (ImageView) findViewById(R.id.barcodePreview);
+            ImageView imageView = findViewById(R.id.barcodePreview);
             imageView.setImageBitmap(result.getBitmapWithResultPoints(Color.YELLOW));
         }
 
@@ -146,17 +142,6 @@ public class MainActivity extends AppCompatActivity {
         public void possibleResultPoints(List<ResultPoint> resultPoints) {
         }
     };
-
-    /*
-    private CompoundButton.OnCheckedChangeListener onCheckedChanged() {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setOperandSubtract(isChecked);
-            }
-        };
-    }
-    */
 
     private void setOperandSubtract (boolean value) {
         subtract=value;
@@ -180,8 +165,6 @@ public class MainActivity extends AppCompatActivity {
             subtract = savedInstanceState.getBoolean(SUBTRACT, false);
             barcodeHistory = savedInstanceState.getStringArrayList(HISTORY);
             printVariables("onCreate", "Recovered");
-            //Log.d(TAG, String.format("onCreate. Recovered LENGTH = %.2f | OPERAND '-' = %b | HISTORY = %s (%d items)", length, subtract, Arrays.toString(barcodeHistory.toArray()), barcodeHistory.size()));
-            //retrievePersisted();
         }
         else {
             Log.d(TAG, "onCreate. State is null");
@@ -192,11 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
         updateGUI();
 
-        /*
-        operandSwitch = (SwitchCompat) findViewById(R.id.operatorSwitch);
-        operandSwitch.setOnCheckedChangeListener(onCheckedChanged());
-        */
-        barcodeView = (DecoratedBarcodeView) findViewById(R.id.barcode_scanner);
+        barcodeView = findViewById(R.id.barcode_scanner);
         Collection<BarcodeFormat> formats = Collections.singletonList(BarcodeFormat.CODE_128);
         barcodeView.getBarcodeView().setDecoderFactory(new DefaultDecoderFactory(formats));
         barcodeView.decodeContinuous(callback);
@@ -212,10 +191,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        /**
-         * Need to check permission at runtime from Android version 6.0
-         * https://developer.android.com/training/permissions/requesting.html
-         */
+        /*
+         Need to check permission at runtime from Android version 6.0
+         https://developer.android.com/training/permissions/requesting.html
+        */
         checkPermissions();
 
         super.onResume();
@@ -349,29 +328,6 @@ public class MainActivity extends AppCompatActivity {
 
         length = bdLength.doubleValue();
     }
-    /**
-     * Adds or subtracts the input value to/from the current sum.
-     *
-     * @param value
-     */
-    private void calculate (double value) {
-        if (!Double.isNaN(length)) {
-            if (subtract) {
-                if (value <= length) {
-                    length = length - value;
-                }
-                else {
-                    Log.e(TAG, String.format("Incorrect value (tried subtracting %.2f from %.2f)", value, length));
-                }
-            }
-            else {
-                length = length + value;
-            }
-        } else {
-            length = value;
-        }
-
-    }
 
     /**
      * Update the GUI
@@ -386,29 +342,16 @@ public class MainActivity extends AppCompatActivity {
             displayText = String.format(Locale.US, "%.2f", length);
         }
 
-        TextView total = (TextView) findViewById(R.id.sum);
+        TextView total = findViewById(R.id.sum);
         total.setText(displayText);
 
-        /*
-                boolean selected = ((RadioButton) v).isChecked();
-
-        switch (v.getId()) {
-            case R.id.operandadd:
-                if (selected)
-                    setOperandSubtract(false);
-                break;
-            case R.id.operandsubtract:
-                if(selected)
-                    setOperandSubtract(true);
-                break;
-         */
         // Display correct operand selection in the view
         if (subtract) {
-            RadioButton button = (RadioButton) findViewById(R.id.operandsubtract);
+            RadioButton button = findViewById(R.id.operandsubtract);
             button.setChecked(true);
         }
         else {
-            RadioButton button = (RadioButton) findViewById(R.id.operandadd);
+            RadioButton button = findViewById(R.id.operandadd);
             button.setChecked(true);
         }
     }
@@ -416,37 +359,45 @@ public class MainActivity extends AppCompatActivity {
     /**
      * There is no method to store doubles in a SharedPreferences editor. Storing as long
      *
-     * @param editor
-     * @param key
-     * @param value
-     * @return
+     * @param editor The SharedPreferences.Editor to use
+     * @param key The key to use
+     * @param value The double value to store in the SharedPreferences.Editor
      */
-    private SharedPreferences.Editor putDouble(final SharedPreferences.Editor editor, final String key, final double value) {
-        return editor.putLong(key, Double.doubleToRawLongBits(value));
+    private void putDouble(final SharedPreferences.Editor editor, final String key, final double value) {
+        editor.putLong(key, Double.doubleToRawLongBits(value));
     }
 
     /**
      * There is no method to store an arrayList in a SharedPreferences editor. Create one string and store it
-     * @param editor
-     * @param key
-     * @param value
-     * @return
+     *
+     * @param editor The SharedPreferences.Editor to use
+     * @param key The key to use
+     * @param value The ArrayList to store in the SharedPreferences.Editor
      */
-    private SharedPreferences.Editor putHistory(final SharedPreferences.Editor editor, final String key, final ArrayList<String> value) {
+    private void putHistory(final SharedPreferences.Editor editor, final String key, final ArrayList<String> value) {
         // Create one string containing the history
         StringBuilder prefHistoryString = new StringBuilder();
         for (String item : value) {
             prefHistoryString.append(item);
             prefHistoryString.append("|");
         }
-        return editor.putString(key, prefHistoryString.toString());
+        editor.putString(key, prefHistoryString.toString());
     }
 
+    /**
+     * Create the history from SharedPreferences (String to ArrayList)
+     *
+     * @param preferences The SharedPreferences
+     * @param key The key storing the history
+     * @return ArrayList containing the history items
+     */
     private ArrayList<String> getHistory(final SharedPreferences preferences, final String key) {
+        // Missing key -> return empty list
         if (!preferences.contains(key)) {
             return new ArrayList<>();
         }
 
+        // Empty string -> return empty list
         String prefHistoryString = preferences.getString(key, "");
         if (prefHistoryString.isEmpty()) {
             return new ArrayList<>();
@@ -460,22 +411,22 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Fetch the double value. The method fetches a long value and returns a double.
      *
-     * @param preferences
-     * @param key
-     * @param defaultValue
-     * @return
+     * @param preferences The SharedPreferences
+     * @param key The key containing the double
+     * @param defaultValue The default value to use in case no key is found
+     * @return The double representation of the stored long
      */
     private double getDouble (final SharedPreferences preferences, final String key, final double defaultValue) {
         if ( !preferences.contains(key) ) {
             return defaultValue;
         }
-        return Double.longBitsToDouble(preferences.getLong(TOTAL,0));
+        return Double.longBitsToDouble(preferences.getLong(key,0));
     }
 
     /**
      * Clear button implementation
      *
-     * @param v
+     * @param v The view calling the method
      */
     public void clear(View v) {
         Log.d(TAG, String.format("clear() - length = %f", length));
@@ -509,19 +460,17 @@ public class MainActivity extends AppCompatActivity {
         barcodeView.decodeSingle(callback);
     }
 
-    /** TODO fix this later
-     *
-     * public void showHistory(View v) {
-     * Intent intent = new Intent(this, HistoryActivity.class);
-     * startActivity(intent);
-     * }
-     *
-     */
+    /* TODO fix this later
+      public void showHistory(View v) {
+      Intent intent = new Intent(this, HistoryActivity.class);
+      startActivity(intent);
+      }
+    */
 
     /**
      * Radio button listener/method
      *
-     * @param v
+     * @param v The view calling the method
      */
     public void onOperandChanged(View v) {
         boolean selected = ((RadioButton) v).isChecked();
